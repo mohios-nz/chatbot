@@ -7,8 +7,7 @@ import ChatWidget from "@/components/ChatWidget";
 function WidgetInner() {
   const searchParams = useSearchParams();
 
-  const systemPrompt =
-    searchParams.get("systemPrompt") || "You are a helpful assistant.";
+  const systemPrompt = searchParams.get("systemPrompt") || undefined;
   const title = searchParams.get("title") || "Chat";
   const accentColor = searchParams.get("accentColor") || "#6366f1";
 
