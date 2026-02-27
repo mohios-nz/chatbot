@@ -29,28 +29,27 @@
 
   var iframeUrl = host + "/widget?" + params.toString();
 
-  // Create iframe container
+  // Create iframe — starts small (just the bubble), expands when chat opens
   var iframe = document.createElement("iframe");
   iframe.src = iframeUrl;
   iframe.style.cssText =
-    "position:fixed;bottom:0;right:0;width:440px;height:640px;border:none;z-index:2147483647;background:transparent;pointer-events:none;";
+    "position:fixed;bottom:0;right:0;width:80px;height:80px;border:none;z-index:2147483647;background:transparent;";
   iframe.setAttribute("allow", "clipboard-write");
   iframe.title = "Chat Widget";
 
-  // Allow the widget to receive pointer events only on its interactive parts
-  iframe.addEventListener("load", function () {
-    // The widget itself handles pointer-events on its children
-    // We keep the iframe container as pointer-events:none so the host page
-    // remains clickable, and the widget sets pointer-events:auto on its elements
-  });
-
   document.body.appendChild(iframe);
 
-  // Listen for resize messages from the widget
+  // Listen for open/close messages from the widget to resize the iframe
   window.addEventListener("message", function (e) {
     if (e.origin !== new URL(host).origin) return;
     if (e.data && e.data.type === "chat-widget-resize") {
-      iframe.style.pointerEvents = e.data.open ? "auto" : "none";
+      if (e.data.open) {
+        iframe.style.width = "440px";
+        iframe.style.height = "640px";
+      } else {
+        iframe.style.width = "80px";
+        iframe.style.height = "80px";
+      }
     }
   });
 })();
