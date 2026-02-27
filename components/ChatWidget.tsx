@@ -12,7 +12,7 @@ interface ChatWidgetProps {
 
 export default function ChatWidget({
   apiUrl = "/api/chat",
-  systemPrompt = "You are a helpful assistant.",
+  systemPrompt,
   title = "Chat",
   accentColor = "#6366f1",
 }: ChatWidgetProps) {

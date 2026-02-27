@@ -10,7 +10,7 @@ interface Message {
 
 interface ChatWindowProps {
   apiUrl: string;
-  systemPrompt: string;
+  systemPrompt?: string;
   title: string;
   accentColor: string;
   onClose: () => void;
@@ -59,7 +59,7 @@ export default function ChatWindow({
             role: m.role,
             content: m.content,
           })),
-          systemPrompt,
+          ...(systemPrompt ? { systemPrompt } : {}),
         }),
       });
 
