@@ -5,11 +5,11 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="max-w-3xl mx-auto px-6 py-20">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Chat Widget Demo
+          Mohios AI Assistant
         </h1>
         <p className="text-lg text-gray-600 mb-8">
-          An embeddable AI chat widget powered by Claude. Click the chat bubble
-          in the bottom-right corner to try it out.
+          Meet the Mohios AI — trained on our methodology, available 24/7.
+          Click the chat bubble to try it.
         </p>
 
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
@@ -19,13 +19,13 @@ export default function Home() {
           <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 text-sm overflow-x-auto">
             <code>{`<script>
   window.ChatWidgetConfig = {
-    host: "https://your-app.vercel.app",
-    systemPrompt: "You are a helpful assistant for Acme Corp.",
-    title: "Acme Support",
-    accentColor: "#6366f1"
+    host: "https://chatbot.mohios.com",
+    systemPrompt: "You are a helpful assistant for Mohios.",
+    title: "Mohios Support",
+    accentColor: "#0F7B6C"
   };
 </script>
-<script src="https://your-app.vercel.app/widget.js"></script>`}</code>
+<script src="https://chatbot.mohios.com/widget.js"></script>`}</code>
           </pre>
         </div>
 
@@ -57,7 +57,7 @@ export default function Home() {
                 <tr className="border-b border-gray-100">
                   <td className="py-2 pr-4 font-mono text-xs">systemPrompt</td>
                   <td className="py-2 pr-4 text-xs">
-                    &quot;You are a helpful assistant.&quot;
+                    Mohios default prompt
                   </td>
                   <td className="py-2">System prompt for Claude</td>
                 </tr>
@@ -68,7 +68,7 @@ export default function Home() {
                 </tr>
                 <tr>
                   <td className="py-2 pr-4 font-mono text-xs">accentColor</td>
-                  <td className="py-2 pr-4">#6366f1</td>
+                  <td className="py-2 pr-4">#0F7B6C</td>
                   <td className="py-2">Primary color for the widget</td>
                 </tr>
               </tbody>
@@ -78,9 +78,8 @@ export default function Home() {
       </div>
 
       <ChatWidget
-        systemPrompt="You are a friendly demo assistant for the Chat Widget project. Keep responses concise and helpful."
-        title="Demo Chat"
-        accentColor="#6366f1"
+        title="Mohios AI"
+        accentColor="#0F7B6C"
       />
     </main>
   );

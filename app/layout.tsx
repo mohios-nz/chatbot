@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chat Widget Demo",
-  description: "Embeddable AI chat widget powered by Claude",
+  title: "Mohios AI Assistant",
+  description: "Meet the Mohios AI — trained on our methodology, available 24/7.",
 };
 
 export default function RootLayout({
