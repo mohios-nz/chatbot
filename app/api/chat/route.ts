@@ -3,6 +3,12 @@ import { NextRequest } from "next/server";
 
 const anthropic = new Anthropic();
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
 const DEFAULT_SYSTEM_PROMPT = `You are the Mohios AI assistant on mohios.com. You're the front door — the first conversation a visitor has with Mohios. Your job is to be genuinely helpful, understand what they need, and connect them with Danny if there's a fit.
 
 About Mohios: Mohios combines mōhio (Māori for expertise and wisdom) with OS (operating system). Wisdom becomes exponentially more useful when it's backed by solid systems. We're an AI-native consultancy based in Auckland, New Zealand helping mid-sized businesses get real, measurable value from AI.
@@ -28,11 +34,7 @@ Opening message when chat opens: 'Hey — welcome to Mohios. I'm the AI assistan
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: CORS_HEADERS,
   });
 }
 
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return Response.json(
         { error: "messages array is required" },
-        { status: 400 }
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -89,14 +91,14 @@ export async function POST(req: NextRequest) {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        "Access-Control-Allow-Origin": "*",
+        ...CORS_HEADERS,
       },
     });
   } catch (err) {
     console.error("Chat API error:", err);
     return Response.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 }
