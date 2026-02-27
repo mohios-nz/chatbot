@@ -1,86 +1,133 @@
 import ChatWidget from "@/components/ChatWidget";
 
+const EXAMPLE_QUESTIONS = [
+  "What does Mohios do?",
+  "How much does a chatbot cost?",
+  "Is AI right for my business?",
+  "How is this different from ChatGPT?",
+];
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="max-w-3xl mx-auto px-6 py-20">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Mohios AI Assistant
+    <main className="min-h-screen flex flex-col">
+      {/* Top brand */}
+      <div className="pt-10 px-6 text-center">
+        <p
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "0.875rem",
+            letterSpacing: "0.3em",
+            color: "#C8A84E",
+          }}
+        >
+          MOHIOS
+        </p>
+      </div>
+
+      {/* Hero */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
+        <h1
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+            fontWeight: 500,
+            lineHeight: 1.1,
+            textAlign: "center",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Meet the Mohios AI
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Meet the Mohios AI — trained on our methodology, available 24/7.
-          Click the chat bubble to try it.
+
+        <p
+          style={{
+            maxWidth: "600px",
+            textAlign: "center",
+            color: "#a1a1aa",
+            fontSize: "1.125rem",
+            lineHeight: 1.7,
+            marginBottom: "3rem",
+          }}
+        >
+          Trained on our methodology. Available 24/7. Ask it anything about what
+          we do, how we work, or whether AI makes sense for your business.
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">
-            Embed on your site
-          </h2>
-          <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 text-sm overflow-x-auto">
-            <code>{`<script>
-  window.ChatWidgetConfig = {
-    host: "https://chatbot.mohios.com",
-    systemPrompt: "You are a helpful assistant for Mohios.",
-    title: "Mohios Support",
-    accentColor: "#0F7B6C"
-  };
-</script>
-<script src="https://chatbot.mohios.com/widget.js"></script>`}</code>
-          </pre>
-        </div>
-
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">
-            Configuration
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 pr-4 font-medium text-gray-700">
-                    Option
-                  </th>
-                  <th className="text-left py-2 pr-4 font-medium text-gray-700">
-                    Default
-                  </th>
-                  <th className="text-left py-2 font-medium text-gray-700">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-600">
-                <tr className="border-b border-gray-100">
-                  <td className="py-2 pr-4 font-mono text-xs">host</td>
-                  <td className="py-2 pr-4">—</td>
-                  <td className="py-2">URL where the widget is deployed</td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="py-2 pr-4 font-mono text-xs">systemPrompt</td>
-                  <td className="py-2 pr-4 text-xs">
-                    Mohios default prompt
-                  </td>
-                  <td className="py-2">System prompt for Claude</td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="py-2 pr-4 font-mono text-xs">title</td>
-                  <td className="py-2 pr-4">&quot;Chat&quot;</td>
-                  <td className="py-2">Title shown in the chat header</td>
-                </tr>
-                <tr>
-                  <td className="py-2 pr-4 font-mono text-xs">accentColor</td>
-                  <td className="py-2 pr-4">#0F7B6C</td>
-                  <td className="py-2">Primary color for the widget</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        {/* Example question pills */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "0.75rem",
+            maxWidth: "700px",
+          }}
+        >
+          {EXAMPLE_QUESTIONS.map((question) => (
+            <button
+              key={question}
+              className="pill-button"
+              style={{
+                border: "1px solid #C8A84E",
+                background: "transparent",
+                color: "#C8A84E",
+                padding: "0.5rem 1.25rem",
+                borderRadius: "9999px",
+                fontSize: "0.875rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {question}
+            </button>
+          ))}
         </div>
       </div>
 
-      <ChatWidget
-        title="Mohios AI"
-        accentColor="#0F7B6C"
-      />
+      {/* Footer */}
+      <footer
+        style={{
+          textAlign: "center",
+          paddingBottom: "2.5rem",
+          paddingTop: "1rem",
+        }}
+      >
+        <p style={{ color: "#71717a", fontSize: "0.8125rem" }}>
+          Built by{" "}
+          <a
+            href="https://mohios.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#a1a1aa",
+              textDecoration: "underline",
+              textUnderlineOffset: "2px",
+            }}
+          >
+            Mohios
+          </a>
+        </p>
+        <p
+          style={{
+            color: "#52525b",
+            fontSize: "0.6875rem",
+            marginTop: "0.5rem",
+            fontStyle: "italic",
+          }}
+        >
+          m&#x14D;hio (M&#x101;ori) — to know, to understand, to be expert in
+        </p>
+      </footer>
+
+      <ChatWidget title="Mohios AI" accentColor="#0F7B6C" />
+
+      <style>{`
+        .pill-button:hover {
+          background: #C8A84E !important;
+          color: #0A0A0F !important;
+        }
+      `}</style>
     </main>
   );
 }
