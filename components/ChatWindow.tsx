@@ -14,7 +14,9 @@ interface ChatWindowProps {
   title: string;
   subtitle?: string;
   accentColor: string;
-  onClose: () => void;
+  onClose?: () => void;
+  embedded?: boolean;
+  suggestions?: string[];
 }
 
 export interface ChatWindowHandle {
@@ -33,6 +35,8 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
   subtitle,
   accentColor,
   onClose,
+  embedded,
+  suggestions,
 }, ref) {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
@@ -142,7 +146,10 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
   }
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 30px rgba(45, 32, 25, 0.12)", border: "1px solid #E8E0D6" }}>
+    <div
+      className={`flex flex-col h-full bg-white overflow-hidden ${embedded ? "" : "rounded-2xl"}`}
+      style={embedded ? undefined : { boxShadow: "0 8px 30px rgba(45, 32, 25, 0.12)", border: "1px solid #E8E0D6" }}
+    >
       {/* Header */}
       <div
         className="flex items-center justify-between px-4 text-white shrink-0"
@@ -154,23 +161,25 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
             <p className="text-xs" style={{ opacity: 0.8, marginTop: "0.125rem" }}>{subtitle}</p>
           )}
         </div>
-        <button
-          onClick={onClose}
-          className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
-          aria-label="Close chat"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
+            aria-label="Close chat"
           >
-            <path d="M1 1l12 12M13 1L1 13" />
-          </svg>
-        </button>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M1 1l12 12M13 1L1 13" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Messages */}
@@ -183,6 +192,32 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
             accentColor={accentColor}
           />
         ))}
+        {suggestions && messages.length === 1 && messages[0] === WELCOME_MESSAGE && (
+          <div className="flex flex-wrap gap-2 mt-2 px-1">
+            {suggestions.map((s) => (
+              <button
+                key={s}
+                onClick={() => handleSendText(s)}
+                className="text-left text-xs px-3 py-1.5 rounded-full transition-colors"
+                style={{
+                  border: "1px solid #E8E0D6",
+                  color: "#C4682B",
+                  background: "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#F0EBE3";
+                  e.currentTarget.style.borderColor = "#C4682B";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "#E8E0D6";
+                }}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
         {isStreaming &&
           messages[messages.length - 1]?.role === "assistant" &&
           !messages[messages.length - 1]?.content && (

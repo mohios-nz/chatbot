@@ -1,44 +1,25 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import ChatWidget from "@/components/ChatWidget";
+import ChatWindow from "@/components/ChatWindow";
 
-function WidgetInner() {
-  const searchParams = useSearchParams();
-
-  const systemPrompt = searchParams.get("systemPrompt") || undefined;
-  const title = searchParams.get("title") || "Chat";
-  const accentColor = searchParams.get("accentColor") || "#6366f1";
-
-  return (
-    <ChatWidget
-      apiUrl="/api/chat"
-      systemPrompt={systemPrompt}
-      title={title}
-      accentColor={accentColor}
-    />
-  );
-}
+const SUGGESTIONS = [
+  "What does Mohios build?",
+  "How would this work for my business?",
+  "What does setup look like?",
+  "Can I see a real example?",
+];
 
 export default function WidgetPage() {
   return (
-    <html lang="en">
-      <head>
-        <style>{`
-          body {
-            margin: 0;
-            padding: 0;
-            background: transparent;
-            overflow: hidden;
-          }
-        `}</style>
-      </head>
-      <body>
-        <Suspense fallback={null}>
-          <WidgetInner />
-        </Suspense>
-      </body>
-    </html>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <ChatWindow
+        apiUrl="/api/chat"
+        title="Chat with Mohios"
+        subtitle="Ask me anything about what we build."
+        accentColor="#C4682B"
+        embedded
+        suggestions={SUGGESTIONS}
+      />
+    </div>
   );
 }
