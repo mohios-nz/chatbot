@@ -1,26 +1,36 @@
-import ChatWidget from "@/components/ChatWidget";
+"use client";
+
+import { useRef } from "react";
+import ChatWidget, { ChatWidgetHandle } from "@/components/ChatWidget";
 
 const EXAMPLE_QUESTIONS = [
-  "What does Mohios do?",
-  "How much does a chatbot cost?",
-  "Is AI right for my business?",
-  "How is this different from ChatGPT?",
+  "What does Mohios build?",
+  "How would this work for my business?",
+  "What does setup look like?",
+  "Can I see a real example?",
 ];
 
 export default function Home() {
+  const chatRef = useRef<ChatWidgetHandle>(null);
+
+  function handlePromptClick(question: string) {
+    chatRef.current?.sendMessage(question);
+  }
+
   return (
     <main className="min-h-screen flex flex-col">
       {/* Top brand */}
       <div className="pt-10 px-6 text-center">
         <p
           style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "0.875rem",
-            letterSpacing: "0.3em",
-            color: "#C8A84E",
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "0.9375rem",
+            fontWeight: 700,
+            letterSpacing: "0.15em",
+            color: "#2D2019",
           }}
         >
-          MOHIOS
+          mohios
         </p>
       </div>
 
@@ -30,27 +40,29 @@ export default function Home() {
           style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-            fontWeight: 500,
+            fontWeight: 700,
             lineHeight: 1.1,
+            letterSpacing: "-0.01em",
             textAlign: "center",
             marginBottom: "1.5rem",
+            color: "#2D2019",
           }}
         >
-          Meet the Mohios AI
+          Chat with Mohios
         </h1>
 
         <p
           style={{
-            maxWidth: "600px",
+            maxWidth: "580px",
             textAlign: "center",
-            color: "#a1a1aa",
+            color: "#8B7D6B",
             fontSize: "1.125rem",
             lineHeight: 1.7,
             marginBottom: "3rem",
           }}
         >
-          Trained on our methodology. Available 24/7. Ask it anything about what
-          we do, how we work, or whether AI makes sense for your business.
+          Trained on how we work. Ask anything about what we build, how we build
+          it, or whether it makes sense for your business.
         </p>
 
         {/* Example question pills */}
@@ -67,10 +79,11 @@ export default function Home() {
             <button
               key={question}
               className="pill-button"
+              onClick={() => handlePromptClick(question)}
               style={{
-                border: "1px solid #C8A84E",
+                border: "1px solid #E8E0D6",
                 background: "transparent",
-                color: "#C8A84E",
+                color: "#C4682B",
                 padding: "0.5rem 1.25rem",
                 borderRadius: "9999px",
                 fontSize: "0.875rem",
@@ -90,17 +103,19 @@ export default function Home() {
         style={{
           textAlign: "center",
           paddingBottom: "2.5rem",
-          paddingTop: "1rem",
+          paddingTop: "1.5rem",
+          borderTop: "1px solid #E8E0D6",
         }}
       >
-        <p style={{ color: "#71717a", fontSize: "0.8125rem" }}>
+        <p style={{ color: "#8B7D6B", fontSize: "0.8125rem" }}>
           Built by{" "}
           <a
             href="https://mohios.com"
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              color: "#a1a1aa",
+              color: "#2D2019",
+              fontWeight: 600,
               textDecoration: "underline",
               textUnderlineOffset: "2px",
             }}
@@ -110,7 +125,7 @@ export default function Home() {
         </p>
         <p
           style={{
-            color: "#52525b",
+            color: "#8B7D6B",
             fontSize: "0.6875rem",
             marginTop: "0.5rem",
             fontStyle: "italic",
@@ -120,12 +135,17 @@ export default function Home() {
         </p>
       </footer>
 
-      <ChatWidget title="Mohios AI" accentColor="#0F7B6C" />
+      <ChatWidget
+        ref={chatRef}
+        title="Chat with Mohios"
+        subtitle="Ask me anything about what we build."
+        accentColor="#C4682B"
+      />
 
       <style>{`
         .pill-button:hover {
-          background: #C8A84E !important;
-          color: #0A0A0F !important;
+          background: #F0EBE3 !important;
+          border-color: #C4682B !important;
         }
       `}</style>
     </main>

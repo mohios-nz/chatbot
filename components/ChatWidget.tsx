@@ -1,22 +1,39 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import ChatWindow from "./ChatWindow";
+import { useState, useEffect, useCallback, useRef, useImperativeHandle, forwardRef } from "react";
+import ChatWindow, { ChatWindowHandle } from "./ChatWindow";
 
 interface ChatWidgetProps {
   apiUrl?: string;
   systemPrompt?: string;
   title?: string;
+  subtitle?: string;
   accentColor?: string;
 }
 
-export default function ChatWidget({
+export interface ChatWidgetHandle {
+  sendMessage: (text: string) => void;
+}
+
+const ChatWidget = forwardRef<ChatWidgetHandle, ChatWidgetProps>(function ChatWidget({
   apiUrl = "/api/chat",
   systemPrompt,
   title = "Chat",
+  subtitle,
   accentColor = "#6366f1",
-}: ChatWidgetProps) {
+}, ref) {
   const [isOpen, setIsOpen] = useState(false);
+  const chatWindowRef = useRef<ChatWindowHandle>(null);
+
+  useImperativeHandle(ref, () => ({
+    sendMessage: (text: string) => {
+      setIsOpen(true);
+      // Small delay to ensure ChatWindow is mounted before sending
+      setTimeout(() => {
+        chatWindowRef.current?.sendMessage(text);
+      }, 350);
+    },
+  }));
 
   // Notify parent iframe about open/close state
   const notifyParent = useCallback((open: boolean) => {
@@ -45,9 +62,11 @@ export default function ChatWidget({
         style={{ width: "380px", height: "560px" }}
       >
         <ChatWindow
+          ref={chatWindowRef}
           apiUrl={apiUrl}
           systemPrompt={systemPrompt}
           title={title}
+          subtitle={subtitle}
           accentColor={accentColor}
           onClose={() => setIsOpen(false)}
         />
@@ -92,4 +111,6 @@ export default function ChatWidget({
       </button>
     </div>
   );
-}
+});
+
+export default ChatWidget;

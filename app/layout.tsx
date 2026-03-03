@@ -1,10 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Mohios AI",
   description:
     "AI assistant trained on the Mohios methodology. Ask about AI consulting, chatbots, and what we build.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FAF7F2",
 };
 
 export default function RootLayout({
@@ -29,8 +33,8 @@ export default function RootLayout({
       <body
         className="antialiased"
         style={{
-          backgroundColor: "#0A0A0F",
-          color: "#ffffff",
+          backgroundColor: "#FAF7F2",
+          color: "#2D2019",
           fontFamily: "'Inter', sans-serif",
         }}
       >

@@ -55,9 +55,9 @@ export default function MessageBubble({
         className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
             ? "text-white rounded-br-md"
-            : "bg-gray-100 text-gray-800 rounded-bl-md"
+            : "rounded-bl-md"
         }`}
-        style={isUser ? { backgroundColor: accentColor } : undefined}
+        style={isUser ? { backgroundColor: accentColor } : { backgroundColor: "#F0EBE3", color: "#2D2019" }}
       >
         {formatContent(content)}
       </div>

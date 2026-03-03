@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import MessageBubble from "./MessageBubble";
 
 interface Message {
@@ -12,18 +12,29 @@ interface ChatWindowProps {
   apiUrl: string;
   systemPrompt?: string;
   title: string;
+  subtitle?: string;
   accentColor: string;
   onClose: () => void;
 }
 
-export default function ChatWindow({
+export interface ChatWindowHandle {
+  sendMessage: (text: string) => void;
+}
+
+const WELCOME_MESSAGE: Message = {
+  role: "assistant",
+  content: "Hey! I'm the Mohios chatbot. What's on your mind?",
+};
+
+const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWindow({
   apiUrl,
   systemPrompt,
   title,
+  subtitle,
   accentColor,
   onClose,
-}: ChatWindowProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+}, ref) {
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -37,13 +48,19 @@ export default function ChatWindow({
     inputRef.current?.focus();
   }, []);
 
-  async function handleSend() {
-    const trimmed = input.trim();
-    if (!trimmed || isStreaming) return;
+  useImperativeHandle(ref, () => ({
+    sendMessage: (text: string) => {
+      handleSendText(text);
+    },
+  }));
 
-    const userMessage: Message = { role: "user", content: trimmed };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+  async function handleSendText(text: string) {
+    if (!text.trim() || isStreaming) return;
+    const userMessage: Message = { role: "user", content: text.trim() };
+    // Filter out the welcome message before sending to API
+    const currentMessages = messages.filter((m) => m !== WELCOME_MESSAGE);
+    const newMessages = [...currentMessages, userMessage];
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsStreaming(true);
 
@@ -113,6 +130,10 @@ export default function ChatWindow({
     }
   }
 
+  function handleSend() {
+    handleSendText(input);
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -121,13 +142,18 @@ export default function ChatWindow({
   }
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+    <div className="flex flex-col h-full bg-white rounded-2xl overflow-hidden" style={{ boxShadow: "0 8px 30px rgba(45, 32, 25, 0.12)", border: "1px solid #E8E0D6" }}>
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-3 text-white shrink-0"
-        style={{ backgroundColor: accentColor }}
+        className="flex items-center justify-between px-4 text-white shrink-0"
+        style={{ backgroundColor: accentColor, paddingTop: "0.75rem", paddingBottom: subtitle ? "0.625rem" : "0.75rem" }}
       >
-        <h2 className="font-semibold text-sm">{title}</h2>
+        <div>
+          <h2 className="font-semibold text-sm">{title}</h2>
+          {subtitle && (
+            <p className="text-xs" style={{ opacity: 0.8, marginTop: "0.125rem" }}>{subtitle}</p>
+          )}
+        </div>
         <button
           onClick={onClose}
           className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
@@ -149,11 +175,6 @@ export default function ChatWindow({
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-        {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-            Send a message to get started
-          </div>
-        )}
         {messages.map((msg, i) => (
           <MessageBubble
             key={i}
@@ -166,19 +187,19 @@ export default function ChatWindow({
           messages[messages.length - 1]?.role === "assistant" &&
           !messages[messages.length - 1]?.content && (
             <div className="flex justify-start mb-3">
-              <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ backgroundColor: "#F0EBE3" }}>
                 <div className="flex space-x-1.5">
                   <div
-                    className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                    style={{ animationDelay: "0ms" }}
+                    className="w-2 h-2 rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms", backgroundColor: "#C4682B" }}
                   />
                   <div
-                    className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                    style={{ animationDelay: "150ms" }}
+                    className="w-2 h-2 rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms", backgroundColor: "#C4682B" }}
                   />
                   <div
-                    className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                    style={{ animationDelay: "300ms" }}
+                    className="w-2 h-2 rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms", backgroundColor: "#C4682B" }}
                   />
                 </div>
               </div>
@@ -188,7 +209,7 @@ export default function ChatWindow({
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 px-4 py-3 shrink-0">
+      <div className="px-4 py-3 shrink-0" style={{ borderTop: "1px solid #E8E0D6" }}>
         <div className="flex items-end gap-2">
           <textarea
             ref={inputRef}
@@ -197,9 +218,9 @@ export default function ChatWindow({
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent max-h-32"
+            className="flex-1 resize-none rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent max-h-32"
             style={
-              { "--tw-ring-color": accentColor } as React.CSSProperties
+              { border: "1px solid #E8E0D6", color: "#2D2019", "--tw-ring-color": accentColor } as React.CSSProperties
             }
             disabled={isStreaming}
           />
@@ -228,4 +249,6 @@ export default function ChatWindow({
       </div>
     </div>
   );
-}
+});
+
+export default ChatWindow;
