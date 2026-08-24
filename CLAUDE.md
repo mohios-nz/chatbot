@@ -21,6 +21,13 @@ before assuming, and write the answer here once it is known.
 - Long output only when asked for it, or when it's the deliverable (code, docs, a file).
 - Docs written FOR the repo keep the repo's depth. This rule is about chat.
 
+**"Bullets" means structure, not the `-` character, and a loaded output style
+WINS on formatting.** These rules govern length and content; the style governs
+the marks on the page. The Spartan style renders each point as its own
+`**→ Point.**` block specifically because terminals collapse `-` lists, so
+following it is obeying "bullets, not paragraphs", not breaking it. With no
+output style loaded, use `-`.
+
 The failure mode to watch: narrating the work at the length the work took. A
 twenty-tool-call task still gets a five-bullet answer. "Show your work" is not a
 licence to write an essay, and it never outranks the rules above.
