@@ -41,12 +41,34 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastUserRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // When an answer starts, scroll until the question it answers sits at the top
+  // of the window, then stop and let the answer grow below it. Following the
+  // stream to the bottom hid the start of every long answer. The answer is
+  // empty at first, so there is nothing to scroll into yet: keep nudging on
+  // each update until the question reaches the top, or the reader scrolls.
+  const pinRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const count = messages.length;
+  const lastRole = messages[count - 1]?.role;
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (count > 1 && lastRole === "assistant") pinRef.current = true;
+  }, [count, lastRole]);
+  useEffect(() => {
+    if (!pinRef.current) return;
+    const box = scrollRef.current;
+    const q = lastUserRef.current;
+    if (!box || !q) return;
+    const offset = q.getBoundingClientRect().top - box.getBoundingClientRect().top;
+    if (offset <= 1) {
+      pinRef.current = false;
+      return;
+    }
+    box.scrollTop += offset;
   }, [messages]);
+  const lastUserIndex = messages.map((m) => m.role).lastIndexOf("user");
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -183,14 +205,20 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+      <div
+        ref={scrollRef}
+        onWheel={() => (pinRef.current = false)}
+        onTouchMove={() => (pinRef.current = false)}
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
+      >
         {messages.map((msg, i) => (
-          <MessageBubble
-            key={i}
-            role={msg.role}
-            content={msg.content}
-            accentColor={accentColor}
-          />
+          <div key={i} ref={i === lastUserIndex ? lastUserRef : undefined}>
+            <MessageBubble
+              role={msg.role}
+              content={msg.content}
+              accentColor={accentColor}
+            />
+          </div>
         ))}
         {suggestions && messages.length === 1 && messages[0] === WELCOME_MESSAGE && (
           <div className="flex flex-wrap gap-2 mt-2 px-1">
@@ -240,7 +268,6 @@ const ChatWindow = forwardRef<ChatWindowHandle, ChatWindowProps>(function ChatWi
               </div>
             </div>
           )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
