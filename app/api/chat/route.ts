@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stream = anthropic.messages.stream({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5-5",
       max_tokens: 1024,
       system: systemPrompt || loadSystemPrompt(),
       messages: messages.map((m: { role: string; content: string }) => ({
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
         } catch (err) {
+          console.error("Chat stream error:", err);
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ error: "Stream error" })}\n\n`
